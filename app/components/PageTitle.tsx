@@ -10,8 +10,8 @@ const PageTitle = ({ children, title, size, noBorder }: PropsWithChildren<TitleP
     const textSize = size || 'xl';
     return (
         <>
-            <div className="flex justify-between place-items-end">
-                <div className={children ? "w-7/12" : "w-full"}>
+            <div className="flex flex-col lg:flex-row lg:justify-between lg:place-items-end">
+                <div className={`w-full ${children && "lg:w-7/12"}`}>
                     <h1 className={`font-semibold text-${textSize}`}>{title}</h1>
                 </div>
                 {children && (<div className="flex space-x-2">{children}</div>)}

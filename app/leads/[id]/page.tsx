@@ -66,9 +66,9 @@ const LeadPage = async ({ params: { id } }: Params) => {
                 {!lead.clientId && <CreateClient lead={lead} />}
                 <LeadForm lead={lead} />
             </PageTitle>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="md:grid grid-cols-2 gap-4">
                 <TableCells tableData={leadData} />
-                <div className="px-5 py-4 border bg-base-100 shadow-xl">
+                <div className="mt-5 md:mt-0 px-5 py-4 border bg-base-100 shadow-xl">
                     <PageTitle noBorder={true} size="md" title="Notes">
                         <AddComment lead={lead} />
                     </PageTitle>
