@@ -7,55 +7,66 @@ import LeadForm from './_components/LeadForm';
 import { Lead, Status } from '@prisma/client';
 import Link from 'next/link';
 import { BsArrowDown, BsArrowUp } from 'react-icons/bs';
+import SearchBar from '../components/SearchBar';
 
 interface Props {
     searchParams: {
         status: Status,
-        orderBy: keyof Lead,
-        by?: 'asc' | "desc"
+        filterBy: keyof Lead,
+        by?: 'asc' | "desc",
+        search?: string
     }
 }
 
 const LeadsPage = async ({ searchParams }: Props) => {
     const statuses = Object.values(Status);
-    const status = statuses.includes(searchParams.status) ? searchParams.status : undefined;
     const by = searchParams.by === 'asc' ? 'desc' : 'asc';
 
-    const orderBy = searchParams.orderBy ? { [searchParams.orderBy]: by ? by : 'desc' } : undefined;
+    const leadWhere = {
+        status: statuses.includes(searchParams.status) ? searchParams.status : undefined,
+        ...(searchParams.search
+            ? {
+                OR: [
+                    { firstName: { contains: searchParams.search } },
+                    { lastName: { contains: searchParams.search } },
+                    { email: { contains: searchParams.search } },
+                    { phone: { contains: searchParams.search } },
+                ],
+            }
+            : {}),
+    };
+
+    const orderBy = searchParams.filterBy ? { [searchParams.filterBy]: by ? by : 'desc' } : undefined;
     const leads = await prisma.lead.findMany({
-        where: {
-            status,
-        },
+        where: leadWhere,
         orderBy
     });
-    if (!leads) notFound();
 
-    const columns: { label: string, value: keyof Lead }[] = [
-        { label: "First Name", value: "firstName" },
-        { label: "Last Name", value: "lastName" },
-        { label: "Email", value: "email" },
-        { label: "Phone", value: "phone" },
-        { label: "Status", value: "status" },
-        { label: "Created At", value: "createdAt" },
-    ];
+    if (!leads) notFound();
+    let searchTitle = searchParams.search ? <h3 className="text-xl font-bold border-b-2 text-primary">
+        Search Rsults For: {searchParams.search}
+    </h3> : "";
+
     return (
         <div className="overflow-x-auto">
             <PageTitle title="All Leads">
+                <SearchBar />
                 <LeadForm />
             </PageTitle>
+            {searchTitle}
             <table className="table table-sm table-zebra-zebra">
                 <thead>
                     <tr className="text-lg border-b-2 border-b-slate-300 text-slate-700">
                         {columns.map(column => {
                             let arrowIcon = <span></span>;
-                            if (column.value === searchParams.orderBy) {
+                            if (column.value === searchParams.filterBy) {
                                 arrowIcon = by === 'asc' ? <BsArrowUp className="ml-1 inline" /> : <BsArrowDown className="ml-1 inline" />;
                             }
                             return (<th key={column.value}>
                                 <Link className="flex items-center" href={{
                                     query: {
                                         ...searchParams,
-                                        orderBy: column.value,
+                                        filterBy: column.value,
                                         by: by
                                     }
                                 }}>
@@ -70,7 +81,6 @@ const LeadsPage = async ({ searchParams }: Props) => {
                 <tbody>
                     {leads.map(lead => {
                         const date = new Date(lead.createdAt);
-                        const newDate = `${date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear()} `
                         return <tr key={lead.id}>
                             <td>{lead.firstName}</td>
                             <td>{lead.lastName}</td>
@@ -84,7 +94,7 @@ const LeadsPage = async ({ searchParams }: Props) => {
                                         .join(' ')}
                                 </div>
                             </td>
-                            <td>{newDate}</td>
+                            <td>{date.toLocaleDateString('en-US')}</td>
                             <td className="text-right pr-0">
                                 <Button className="btn-success text-xs" link={`/leads/${lead.id}`}>Details</Button>
                             </td>
@@ -95,6 +105,15 @@ const LeadsPage = async ({ searchParams }: Props) => {
         </div>
     )
 }
+
+const columns: { label: string, value: keyof Lead }[] = [
+    { label: "First Name", value: "firstName" },
+    { label: "Last Name", value: "lastName" },
+    { label: "Email", value: "email" },
+    { label: "Phone", value: "phone" },
+    { label: "Status", value: "status" },
+    { label: "Created At", value: "createdAt" },
+];
 
 export const revalidate = 0;
 export default LeadsPage

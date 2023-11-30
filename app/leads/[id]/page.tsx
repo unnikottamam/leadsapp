@@ -39,7 +39,7 @@ const LeadPage = async ({ params: { id } }: Params) => {
                 <div className="">
                     <p className="font-semibold">{comment}</p>
                     {client && `<p>${client?.firstName + " " + client?.lastName}</p>`}
-                    <div><em>Date: {createdAt.toLocaleDateString()}</em></div>
+                    <div><em>Date: {createdAt.toLocaleDateString('en-US')}</em></div>
                 </div>
             </div>
         )
