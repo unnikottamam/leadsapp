@@ -63,7 +63,7 @@ const LeadsPage = async ({ searchParams }: Props) => {
                                 arrowIcon = by === 'asc' ? <BsArrowUp className="ml-1 inline" /> : <BsArrowDown className="ml-1 inline" />;
                             }
                             return (<th key={column.value}>
-                                <Link className="flex items-center" href={{
+                                <Link prefetch={false} className="flex items-center" href={{
                                     pathname: '/leads',
                                     query: {
                                         ...searchParams,
