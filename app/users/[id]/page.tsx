@@ -28,5 +28,5 @@ const UserPage = async ({ params }: Params) => {
         </>
     )
 }
-export const revalidate = 0;
+
 export default UserPage

@@ -33,5 +33,4 @@ const ClientPage = async ({ params: { id } }: Params) => {
     )
 }
 
-export const revalidate = 0;
 export default ClientPage

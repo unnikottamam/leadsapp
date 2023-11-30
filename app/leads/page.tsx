@@ -64,6 +64,7 @@ const LeadsPage = async ({ searchParams }: Props) => {
                             }
                             return (<th key={column.value}>
                                 <Link className="flex items-center" href={{
+                                    pathname: '/leads',
                                     query: {
                                         ...searchParams,
                                         filterBy: column.value,
