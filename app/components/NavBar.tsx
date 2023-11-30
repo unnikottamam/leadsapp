@@ -29,7 +29,7 @@ const NavBar = ({ className, navBarItems }: PropsWithChildren<NavProps>) => {
                 <ul className="px-7 flex-col gap-2 font-semibold text-lg text-slate-900 dark:text-slate-200 hidden md:block">
                     {navBarItems.map((link) => (
                         <li key={link.href}>
-                            <Link className={`btn-block btn btn-sm justify-start ${pathname === link.href ? 'btn-primary btn-sm' : ''}`} href={link.href}>{link.text}</Link>
+                            <Link prefetch={false} className={`btn-block btn btn-sm justify-start ${pathname === link.href ? 'btn-primary btn-sm' : ''}`} href={link.href}>{link.text}</Link>
                         </li>
                     ))}
                 </ul>
