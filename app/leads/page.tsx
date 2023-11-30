@@ -115,5 +115,5 @@ const columns: { label: string, value: keyof Lead }[] = [
     { label: "Created At", value: "createdAt" },
 ];
 
-export const revalidate = 0;
+export const dynamic = 'force-dynamic';
 export default LeadsPage
